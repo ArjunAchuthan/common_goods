@@ -11,169 +11,171 @@
 
   <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
   <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
   <%= javascript_importmap_tags %>
 </head>
-<body class="h-full flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans">
+<body class="h-full flex flex-col bg-background text-on-surface font-sans antialiased">
 
   <%# ═══════════════════════════════════════════ %>
-  <%# PREMIUM STICKY HEADER                      %>
+  <%# STITCH TOP FIXED NAVIGATION BAR             %>
   <%# ═══════════════════════════════════════════ %>
-  <header class="sticky top-0 z-50 glass-panel border-b border-slate-200/40 dark:border-slate-800/40 shadow-sm" data-turbo-permanent id="main-header">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between h-16 sm:h-18 items-center">
+  <nav class="bg-surface/80 backdrop-blur-md dark:bg-surface/85 fixed top-0 w-full z-50 border-b border-outline-variant/30 shadow-sm" data-turbo-permanent id="main-header">
+    <div class="flex justify-between items-center w-full px-4 sm:px-margin-desktop max-w-container-max mx-auto h-20">
+      
+      <%# Brand Logo %>
+      <div class="flex items-center">
+        <%= link_to root_path, class: "flex items-center space-x-3 group", id: "brand-logo" do %>
+          <div class="w-10 h-10 bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/20 group-hover:scale-110 group-hover:shadow-emerald-500/30 transition-all duration-300">
+            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+          </div>
+          <span class="text-xl sm:text-2xl font-extrabold text-on-background tracking-tight">
+            Common<span class="gradient-text">Goods</span>
+          </span>
+        <% end %>
+      </div>
 
-        <%# Brand Logo %>
-        <div class="flex items-center">
-          <%= link_to root_path, class: "flex items-center space-x-3 group", id: "brand-logo" do %>
-            <div class="w-10 h-10 bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/20 group-hover:scale-110 group-hover:shadow-emerald-500/30 transition-all duration-300">
-              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-              </svg>
-            </div>
-            <span class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-              Common<span class="gradient-text">Goods</span>
-            </span>
-          <% end %>
-        </div>
+      <%# Desktop Center Navigation Links %>
+      <div class="hidden md:flex items-center gap-8">
+        <%= link_to "Feed", root_path, class: "font-body-base text-body-base #{current_page?(root_path) || current_page?(items_path) ? 'text-primary border-b-2 border-primary font-bold pb-1' : 'text-secondary hover:text-primary transition-all duration-200'}" %>
+        <% if user_signed_in? %>
+          <%= link_to "My Borrows", my_borrows_loans_path, class: "font-body-base text-body-base #{current_page?(my_borrows_loans_path) ? 'text-primary border-b-2 border-primary font-bold pb-1' : 'text-secondary hover:text-primary transition-all duration-200'}" %>
+          <%= link_to "My Lends", my_lends_loans_path, class: "font-body-base text-body-base #{current_page?(my_lends_loans_path) ? 'text-primary border-b-2 border-primary font-bold pb-1' : 'text-secondary hover:text-primary transition-all duration-200'}" %>
+          <%= link_to "Invite Neighbors", new_invitation_path, class: "font-body-base text-body-base #{current_page?(new_invitation_path) ? 'text-primary border-b-2 border-primary font-bold pb-1' : 'text-secondary hover:text-primary transition-all duration-200'}" %>
+        <% end %>
+      </div>
 
-        <%# Center Search (desktop) %>
-        <div class="hidden lg:flex items-center flex-1 max-w-md mx-8">
+      <%# Desktop Search Frame (centered and only shown if signed in) %>
+      <% if user_signed_in? %>
+        <div class="hidden lg:flex items-center flex-1 max-w-xs mx-6">
           <%= form_with url: search_items_path, method: :get, class: "w-full", data: { controller: "search", turbo_frame: "items_grid" } do |f| %>
             <div class="relative w-full">
-              <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                <svg class="h-4.5 w-4.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                </svg>
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <span class="material-symbols-outlined text-outline text-lg">search</span>
               </div>
               <%= f.text_field :query,
-                  placeholder: "Search tools, gear, equipment...",
+                  placeholder: "Search tools, gear...",
                   value: params[:query],
-                  class: "block w-full pl-10 pr-4 py-2.5 border border-slate-200/80 dark:border-slate-700/60 rounded-xl bg-slate-100/50 dark:bg-slate-800/40 text-sm placeholder-slate-400 dark:placeholder-slate-500 focus:bg-white dark:focus:bg-slate-800 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300",
+                  class: "block w-full pl-10 pr-3 py-2 border border-outline-variant/50 rounded-full bg-surface-container-lowest text-sm placeholder:text-outline focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-300",
                   data: { search_target: "input", action: "input->search#debounceSearch" } %>
             </div>
           <% end %>
         </div>
+      <% end %>
 
-        <%# Right Actions %>
-        <div class="flex items-center gap-2 sm:gap-3">
-          <% if user_signed_in? %>
+      <%# Right Actions %>
+      <div class="flex items-center gap-3">
+        <% if user_signed_in? %>
 
-            <%# Notifications Bell %>
-            <div class="relative" data-controller="notification">
-              <button data-action="click->notification#toggle" class="relative p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-white transition-all duration-200" id="notification-bell">
-                <svg class="w-5.5 h-5.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-                </svg>
-                <% if current_user.unread_notifications_count > 0 %>
-                  <span id="notifications_badge" class="notification-dot">
-                    <%= current_user.unread_notifications_count %>
-                  </span>
+          <%# Notifications Bell %>
+          <div class="relative" data-controller="notification">
+            <button data-action="click->notification#toggle" class="relative p-2.5 rounded-full hover:bg-surface-container/50 text-on-background transition-all active:scale-95" id="notification-bell">
+              <span class="material-symbols-outlined text-[24px]">notifications</span>
+              <% if current_user.unread_notifications_count > 0 %>
+                <span id="notifications_badge" class="notification-dot">
+                  <%= current_user.unread_notifications_count %>
+                </span>
+              <% end %>
+            </button>
+
+            <%# Notification Dropdown %>
+            <div data-notification-target="dropdown" class="hidden absolute right-0 mt-3 w-80 sm:w-96 bg-surface-container-lowest rounded-2xl shadow-xl border border-outline-variant/30 overflow-hidden z-50 animate-scale-in">
+              <div class="p-4 border-b border-outline-variant/10 flex items-center justify-between">
+                <h3 class="font-bold text-sm text-on-surface">Notifications</h3>
+                <%= link_to "Mark all read", mark_all_read_notifications_path, data: { turbo_method: :post }, class: "text-xs font-semibold text-primary hover:text-accent-primary-hover transition-colors" %>
+              </div>
+              <div id="notifications_list" class="max-h-80 overflow-y-auto divide-y divide-outline-variant/10">
+                <%= turbo_frame_tag "notifications_dropdown" do %>
+                  <p class="p-6 text-sm text-outline text-center">Loading...</p>
                 <% end %>
-              </button>
-
-              <%# Notification Dropdown %>
-              <div data-notification-target="dropdown" class="hidden absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200/60 dark:border-slate-700/50 overflow-hidden z-50 animate-scale-in">
-                <div class="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                  <h3 class="font-bold text-sm text-slate-800 dark:text-white">Notifications</h3>
-                  <%= link_to "Mark all read", mark_all_read_notifications_path, data: { turbo_method: :post }, class: "text-xs font-semibold text-emerald-600 hover:text-emerald-700 transition-colors" %>
-                </div>
-                <div id="notifications_list" class="max-h-80 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800">
-                  <%= turbo_frame_tag "notifications_dropdown" do %>
-                    <p class="p-6 text-sm text-slate-400 text-center">Loading...</p>
-                  <% end %>
-                </div>
               </div>
             </div>
+          </div>
 
-            <%# Share Item Button %>
-            <%= link_to new_item_path, class: "hidden sm:inline-flex items-center gap-2 px-4 py-2 btn-primary text-sm", id: "share-item-btn" do %>
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
-              </svg>
-              Share Item
-            <% end %>
-
-            <%# User Avatar Dropdown %>
-            <div class="relative group" id="user-menu">
-              <button class="flex items-center gap-2 p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200">
-                <div class="w-9 h-9 bg-gradient-to-br from-violet-500 via-purple-500 to-fuchsia-500 rounded-xl flex items-center justify-center shadow-md shadow-purple-500/20">
-                  <span class="text-white text-sm font-bold"><%= current_user.name.first.upcase %></span>
-                </div>
-                <span class="hidden sm:block text-sm font-semibold text-slate-700 dark:text-slate-200"><%= current_user.name.split.first %></span>
-                <svg class="hidden sm:block w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                </svg>
-              </button>
-
-              <%# Dropdown Menu %>
-              <div class="invisible group-hover:visible opacity-0 group-hover:opacity-100 absolute right-0 mt-1 w-56 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200/60 dark:border-slate-700/50 py-2 transition-all duration-200 origin-top-right transform scale-95 group-hover:scale-100 z-50">
-                <div class="px-4 py-3 border-b border-slate-100 dark:border-slate-800">
-                  <p class="text-sm font-bold text-slate-800 dark:text-white truncate"><%= current_user.name %></p>
-                  <p class="text-xs text-slate-400 truncate mt-0.5"><%= current_user.email %></p>
-                </div>
-                <div class="py-1">
-                  <%= link_to items_path, class: "flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors" do %>
-                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
-                    My Items
-                  <% end %>
-                  <%= link_to my_borrows_loans_path, class: "flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors" do %>
-                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/></svg>
-                    My Borrows
-                  <% end %>
-                  <%= link_to my_lends_loans_path, class: "flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors" do %>
-                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    My Lends
-                  <% end %>
-                  <%= link_to new_invitation_path, class: "flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors" do %>
-                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
-                    Invite Neighbors
-                  <% end %>
-                </div>
-                <% if current_user.captain_or_admin? %>
-                  <div class="border-t border-slate-100 dark:border-slate-800 my-1"></div>
-                  <%= link_to admin_path, class: "flex items-center gap-3 px-4 py-2.5 text-sm font-semibold text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/20 transition-colors" do %>
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                    Admin Dashboard
-                  <% end %>
-                <% end %>
-                <div class="border-t border-slate-100 dark:border-slate-800 my-1"></div>
-                <%= button_to "Sign Out", session_path, method: :delete, class: "flex items-center gap-3 w-full text-left px-4 py-2.5 text-sm font-semibold text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors" %>
-              </div>
-            </div>
-
-          <% else %>
-            <%# Guest Navigation %>
-            <%= link_to "Sign In", new_session_path, class: "text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors px-3 py-2", id: "sign-in-link" %>
-            <%= link_to new_registration_path, class: "inline-flex items-center gap-2 px-4 py-2 btn-primary text-sm", id: "join-btn" do %>
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
-              </svg>
-              Join Free
-            <% end %>
+          <%# Share Item Button %>
+          <%= link_to new_item_path, class: "hidden sm:inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-on-primary rounded-full font-label-caps text-xs tracking-wider transition-all hover:brightness-110 shadow-md active:scale-95 duration-200", id: "share-item-btn" do %>
+            <span class="material-symbols-outlined text-[16px]">add</span>
+            LEND ITEM
           <% end %>
-        </div>
+
+          <%# User Avatar Dropdown %>
+          <div class="relative group" id="user-menu">
+            <button class="flex items-center gap-2 p-1 rounded-full border-2 border-outline-variant/30 hover:border-primary transition-all active:scale-95">
+              <div class="w-8 h-8 bg-gradient-to-br from-violet-500 to-fuchsia-500 rounded-full flex items-center justify-center shadow-md">
+                <span class="text-white text-xs font-bold"><%= current_user.name.first.upcase %></span>
+              </div>
+            </button>
+
+            <%# Dropdown Menu %>
+            <div class="invisible group-hover:visible opacity-0 group-hover:opacity-100 absolute right-0 mt-2 w-56 bg-surface-container-lowest rounded-2xl shadow-xl border border-outline-variant/30 py-2 transition-all duration-200 origin-top-right transform scale-95 group-hover:scale-100 z-50">
+              <div class="px-4 py-3 border-b border-outline-variant/10">
+                <p class="text-sm font-bold text-on-surface truncate"><%= current_user.name %></p>
+                <p class="text-xs text-outline truncate mt-0.5"><%= current_user.email %></p>
+              </div>
+              <div class="py-1">
+                <%= link_to items_path, class: "flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-secondary hover:bg-surface-container/50 hover:text-primary transition-colors" do %>
+                  <span class="material-symbols-outlined text-outline text-lg">grid_view</span>
+                  My Items
+                <% end %>
+                <%= link_to my_borrows_loans_path, class: "flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-secondary hover:bg-surface-container/50 hover:text-primary transition-colors" do %>
+                  <span class="material-symbols-outlined text-outline text-lg">swap_horiz</span>
+                  My Borrows
+                <% end %>
+                <%= link_to my_lends_loans_path, class: "flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-secondary hover:bg-surface-container/50 hover:text-primary transition-colors" do %>
+                  <span class="material-symbols-outlined text-outline text-lg">handshake</span>
+                  My Lends
+                <% end %>
+                <%= link_to new_invitation_path, class: "flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-secondary hover:bg-surface-container/50 hover:text-primary transition-colors" do %>
+                  <span class="material-symbols-outlined text-outline text-lg">person_add</span>
+                  Invite Neighbors
+                <% end %>
+              </div>
+              <% if current_user.captain_or_admin? %>
+                <div class="border-t border-outline-variant/10 my-1"></div>
+                <%= link_to admin_path, class: "flex items-center gap-3 px-4 py-2.5 text-sm font-semibold text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/20 transition-colors" do %>
+                  <span class="material-symbols-outlined text-lg">admin_panel_settings</span>
+                  Captain Dashboard
+                <% end %>
+              <% end %>
+              <div class="border-t border-outline-variant/10 my-1"></div>
+              <%= button_to session_path, method: :delete, class: "flex items-center gap-3 w-full text-left px-4 py-2.5 text-sm font-semibold text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors cursor-pointer" do %>
+                <span class="material-symbols-outlined text-lg text-red-400">logout</span>
+                Sign Out
+              <% end %>
+            </div>
+          </div>
+
+        <% else %>
+          <%# Guest Navigation %>
+          <%= link_to "Sign In", new_session_path, class: "text-sm font-semibold text-secondary hover:text-primary transition-colors px-3 py-2", id: "sign-in-link" %>
+          <%= link_to new_registration_path, class: "inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-on-primary rounded-full font-label-caps text-xs tracking-wider transition-all hover:brightness-110 active:scale-95 duration-200", id: "join-btn" do %>
+            <span class="material-symbols-outlined text-[16px]">person_add</span>
+            JOIN FREE
+          <% end %>
+        <% end %>
       </div>
     </div>
-  </header>
+  </nav>
 
   <%# ═══════════════════════════════════════════ %>
-  <%# FLASH NOTIFICATIONS                        %>
+  <%# FLASH FLOATING TOASTS                       %>
   <%# ═══════════════════════════════════════════ %>
-  <div class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 mt-4" data-controller="flash">
+  <div class="fixed top-24 right-4 z-50 max-w-sm w-full space-y-3" data-controller="flash">
     <% flash.each do |type, message| %>
-      <div class="mb-3 px-5 py-3.5 rounded-xl text-sm font-semibold flex items-center justify-between shadow-sm animate-fade-in-up border
-        <%= type == 'notice' ? 'bg-emerald-50/90 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-300 border-emerald-200/60 dark:border-emerald-800/40' : 'bg-rose-50/90 dark:bg-rose-950/30 text-rose-800 dark:text-rose-300 border-rose-200/60 dark:border-rose-800/40' %>"
+      <div class="px-5 py-4 rounded-2xl text-sm font-semibold flex items-center justify-between shadow-xl animate-slide-in-right border backdrop-blur-md
+        <%= type == 'notice' ? 'bg-emerald-50/90 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-300 border-emerald-200/50 dark:border-emerald-800/40' : 'bg-rose-50/90 dark:bg-rose-950/30 text-rose-800 dark:text-rose-300 border-rose-200/60 dark:border-rose-800/40' %>"
         data-flash-target="message">
-        <div class="flex items-center gap-2.5">
+        <div class="flex items-center gap-3">
           <% if type == 'notice' %>
-            <svg class="w-5 h-5 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span class="material-symbols-outlined text-emerald-500">check_circle</span>
           <% else %>
-            <svg class="w-5 h-5 text-rose-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+            <span class="material-symbols-outlined text-rose-500">warning</span>
           <% end %>
           <span><%= message %></span>
         </div>
-        <button data-action="click->flash#dismiss" class="ml-4 p-1 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-all text-slate-400 hover:text-slate-600 dark:hover:text-white">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        <button data-action="click->flash#dismiss" class="ml-4 p-1 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-all text-outline hover:text-on-surface">
+          <span class="material-symbols-outlined text-base">close</span>
         </button>
       </div>
     <% end %>
@@ -182,31 +184,82 @@
   <%# ═══════════════════════════════════════════ %>
   <%# MAIN CONTENT                               %>
   <%# ═══════════════════════════════════════════ %>
-  <main class="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+  <main class="flex-1 max-w-container-max mx-auto w-full px-4 sm:px-margin-desktop pt-28 pb-20">
     <%= yield %>
   </main>
 
   <%# ═══════════════════════════════════════════ %>
   <%# FOOTER                                     %>
   <%# ═══════════════════════════════════════════ %>
-  <footer class="border-t border-slate-200/40 dark:border-slate-800/40 bg-white/30 dark:bg-slate-950/50 backdrop-blur-sm mt-16">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div class="flex items-center gap-2 text-sm">
+  <footer class="bg-surface-container-lowest dark:bg-surface-container-lowest w-full py-12 border-t border-outline-variant/10">
+    <div class="max-w-container-max mx-auto px-4 sm:px-margin-desktop grid grid-cols-1 md:grid-cols-2 items-center gap-6">
+      <div class="space-y-4">
+        <div class="flex items-center gap-2.5">
           <div class="w-6 h-6 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-lg flex items-center justify-center">
             <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/>
             </svg>
           </div>
-          <span class="font-bold text-slate-700 dark:text-slate-300">CommonGoods</span>
-          <span class="text-slate-400 dark:text-slate-500">&copy; <%= Date.current.year %></span>
+          <span class="font-headline-md text-headline-md text-on-surface">Common Goods</span>
         </div>
-        <p class="text-sm text-slate-400 dark:text-slate-500 font-medium">
-          Reducing consumption. Fostering connection.
-        </p>
+        <p class="font-body-base text-body-base text-secondary max-w-sm">A sustainable neighborhood initiative for sharing tools, kitchenware, and more with the people next door.</p>
+        <div class="text-outline text-xs">© <%= Date.current.year %> Common Goods Neighborhood. Built with trust.</div>
+      </div>
+      <div class="flex flex-wrap gap-x-8 gap-y-4 md:justify-end text-sm">
+        <a class="font-body-base text-secondary hover:text-primary transition-colors hover:underline underline-offset-4" href="#">Safety Guidelines</a>
+        <a class="font-body-base text-secondary hover:text-primary transition-colors hover:underline underline-offset-4" href="#">Privacy Policy</a>
+        <a class="font-body-base text-secondary hover:text-primary transition-colors hover:underline underline-offset-4" href="#">Terms of Service</a>
+        <a class="font-body-base text-secondary hover:text-primary transition-colors hover:underline underline-offset-4" href="#">Help Center</a>
       </div>
     </div>
   </footer>
 
+  <%# ═══════════════════════════════════════════ %>
+  <%# MOBILE BOTTOM NAVIGATION BAR                %>
+  <%# ═══════════════════════════════════════════ %>
+  <nav class="bg-surface/95 backdrop-blur-xl dark:bg-surface/95 fixed bottom-0 w-full z-50 md:hidden rounded-t-2xl border-t border-outline-variant/20 shadow-lg pb-safe-bottom">
+    <div class="flex justify-around items-center w-full px-4 py-3">
+      <%= link_to root_path, class: "flex flex-col items-center justify-center gap-0.5 #{current_page?(root_path) || current_page?(items_path) ? 'text-primary' : 'text-secondary'} active:scale-90 transition-transform duration-150" do %>
+        <span class="material-symbols-outlined text-[24px]">grid_view</span>
+        <span class="font-label-caps text-[9px] tracking-wider uppercase font-semibold">Feed</span>
+      <% end %>
+      <% if user_signed_in? %>
+        <%= link_to my_borrows_loans_path, class: "flex flex-col items-center justify-center gap-0.5 #{current_page?(my_borrows_loans_path) ? 'text-primary' : 'text-secondary'} active:scale-90 transition-transform duration-150" do %>
+          <span class="material-symbols-outlined text-[24px]">swap_horiz</span>
+          <span class="font-label-caps text-[9px] tracking-wider uppercase font-semibold">Requests</span>
+        <% end %>
+        <%= link_to new_item_path, class: "flex flex-col items-center justify-center gap-0.5 #{current_page?(new_item_path) ? 'text-primary' : 'text-secondary'} active:scale-90 transition-transform duration-150" do %>
+          <span class="material-symbols-outlined text-[24px]">add_circle</span>
+          <span class="font-label-caps text-[9px] tracking-wider uppercase font-semibold">Lend</span>
+        <% end %>
+        <%= link_to items_path, class: "flex flex-col items-center justify-center gap-0.5 #{current_page?(items_path) ? 'text-primary' : 'text-secondary'} active:scale-90 transition-transform duration-150" do %>
+          <span class="material-symbols-outlined text-[24px]">person</span>
+          <span class="font-label-caps text-[9px] tracking-wider uppercase font-semibold">Profile</span>
+        <% end %>
+      <% else %>
+        <%= link_to new_session_path, class: "flex flex-col items-center justify-center gap-0.5 text-secondary active:scale-90 transition-transform duration-150" do %>
+          <span class="material-symbols-outlined text-[24px]">login</span>
+          <span class="font-label-caps text-[9px] tracking-wider uppercase font-semibold">Sign In</span>
+        <% end %>
+      <% end %>
+    </div>
+  </nav>
+
+  <script>
+    // Subtle tactile scale feedback for interactive elements
+    document.querySelectorAll('button, a, .tab-item').forEach(el => {
+      el.addEventListener('mousedown', () => {
+        el.style.transform = 'scale(0.96)';
+        el.style.transition = 'transform 0.1s ease';
+      });
+      el.addEventListener('mouseup', () => {
+        el.style.transform = '';
+      });
+      el.addEventListener('mouseleave', () => {
+        el.style.transform = '';
+      });
+    });
+  </script>
 </body>
 </html>
+

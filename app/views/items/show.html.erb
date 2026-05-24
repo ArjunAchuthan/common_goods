@@ -1,190 +1,263 @@
-<%# Item Show Page — Premium Detail View %>
-<div class="max-w-6xl mx-auto space-y-6 animate-fade-in-up">
+<%# Item Show Page — Stitch Details View %>
+<div class="space-y-6 animate-fade-in-up">
 
   <%# Breadcrumb Nav %>
   <div>
-    <%= link_to items_path, class: "inline-flex items-center gap-2 text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors group" do %>
-      <svg class="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-      </svg>
-      Back to Browse
+    <%= link_to items_path, class: "inline-flex items-center gap-2 text-xs font-bold text-secondary hover:text-primary transition-colors group" do %>
+      <span class="material-symbols-outlined group-hover:-translate-x-1 transition-transform">arrow_back</span>
+      <span class="font-label-caps text-xs uppercase tracking-wider">Back to Community Feed</span>
     <% end %>
   </div>
 
-  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+  <%# Two-column Layout %>
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
-    <%# Left Column: Gallery %>
-    <div class="lg:col-span-7 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/50 dark:border-slate-800/40 shadow-sm overflow-hidden">
-
-      <%# Main Image %>
-      <div class="aspect-[4/3] bg-gradient-to-br from-slate-100 to-slate-50 dark:from-slate-800 dark:to-slate-850 relative flex items-center justify-center">
+    <%# Left Column: Image showcase & Neighbor Profile %>
+    <div class="lg:col-span-7 space-y-8">
+      <%# Main Image Showcase %>
+      <div class="relative rounded-2xl overflow-hidden premium-card-shadow image-zoom bg-surface-container/35 aspect-[4/3] border border-outline-variant/15">
         <% if @item.images.attached? %>
           <%= image_tag @item.images.first.variant(resize_to_limit: [800, 600]),
-              class: "w-full h-full object-cover", alt: @item.name %>
+              class: "w-full h-full object-cover transition-transform duration-700", alt: @item.name %>
         <% else %>
-          <div class="flex flex-col items-center gap-3 text-slate-300 dark:text-slate-600">
-            <svg class="w-16 h-16 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-            </svg>
-            <span class="text-xs font-bold uppercase tracking-wider opacity-50">No photos uploaded</span>
+          <div class="w-full h-full flex flex-col items-center justify-center text-outline gap-2">
+            <span class="material-symbols-outlined text-[64px] opacity-40">image</span>
+            <span class="font-label-caps text-xs tracking-wider uppercase font-semibold">No photos uploaded</span>
+          </div>
+        <% end %>
+
+        <% if @item.available? %>
+          <div class="absolute top-4 left-4 bg-primary text-on-primary px-4 py-2 rounded-full font-label-caps text-xs shadow-lg font-black tracking-wider">
+            POPULAR CHOICE
           </div>
         <% end %>
       </div>
 
       <%# Thumbnail Grid %>
       <% if @item.images.attached? && @item.images.count > 1 %>
-        <div class="flex gap-2 p-4 overflow-x-auto">
+        <div class="grid grid-cols-4 gap-4">
           <% @item.images.each do |image| %>
-            <div class="w-20 h-20 rounded-xl overflow-hidden cursor-pointer hover:ring-2 hover:ring-emerald-500 transition-all duration-200 border border-slate-100 dark:border-slate-800 flex-shrink-0">
+            <div class="rounded-xl overflow-hidden h-24 premium-card-shadow border border-outline-variant/20 cursor-pointer hover:border-primary transition-all">
               <%= image_tag image.variant(resize_to_fill: [150, 150]), class: "w-full h-full object-cover" %>
             </div>
           <% end %>
         </div>
       <% end %>
 
-      <%# Description %>
-      <div class="p-6 border-t border-slate-100 dark:border-slate-800/60">
-        <h2 class="text-lg font-bold text-slate-800 dark:text-white mb-3">About This Item</h2>
-        <p class="text-slate-600 dark:text-slate-300 leading-relaxed text-sm font-medium">
+      <%# About Box %>
+      <div class="p-6 bg-surface-container-lowest rounded-2xl border border-outline-variant/20 premium-card-shadow space-y-3">
+        <h3 class="font-headline-md text-xl text-on-surface">About This Item</h3>
+        <p class="text-secondary font-body-base leading-relaxed text-sm">
           <%= @item.description %>
         </p>
       </div>
+
+      <%# Neighbor Section %>
+      <section class="space-y-6">
+        <h2 class="font-headline-lg text-2xl text-on-surface">Meet Your Neighbor</h2>
+        <div class="bg-surface-container-lowest p-6 sm:p-8 rounded-2xl border border-outline-variant/20 premium-card-shadow flex flex-col sm:flex-row gap-6">
+          <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center flex-shrink-0 shadow-lg border-4 border-primary-container/20">
+            <span class="text-white text-3xl font-black"><%= @item.user.name.first.upcase %></span>
+          </div>
+          <div class="flex-grow space-y-2.5">
+            <div class="flex items-center gap-2">
+              <h3 class="font-headline-md text-xl text-on-surface"><%= @item.user.name %></h3>
+              <span class="material-symbols-outlined text-primary text-xl" style="font-variation-settings: 'FILL' 1;">verified</span>
+            </div>
+            <% if @item.user.neighborhood %>
+              <p class="text-secondary font-body-base text-sm font-semibold italic">
+                Member of <%= @item.user.neighborhood.name %>
+              </p>
+            <% end %>
+            <div class="flex gap-6 text-sm font-semibold pt-2">
+              <div>
+                <span class="block font-black text-primary text-lg"><%= @item.user.items.count %></span>
+                <span class="font-label-caps text-[9px] text-secondary opacity-70 tracking-widest">SHARED ITEMS</span>
+              </div>
+              <div class="w-px bg-outline-variant/30"></div>
+              <div>
+                <span class="block font-black text-primary text-lg">4.9</span>
+                <span class="font-label-caps text-[9px] text-secondary opacity-70 tracking-widest">RATING</span>
+              </div>
+              <div class="w-px bg-outline-variant/30"></div>
+              <div>
+                <span class="block font-black text-primary text-lg">Member</span>
+                <span class="font-label-caps text-[9px] text-secondary opacity-70 tracking-widest">STATUS</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <%# Proximity Area Map representation %>
+        <div class="bg-surface-container-lowest rounded-2xl border border-outline-variant/20 premium-card-shadow overflow-hidden relative min-h-[220px]">
+          <div class="absolute inset-0 bg-slate-100 flex items-center justify-center">
+            <div class="w-full h-full bg-gradient-to-br from-emerald-500/10 to-teal-500/10 flex items-center justify-center">
+              <div class="w-32 h-32 rounded-full bg-primary/10 flex items-center justify-center animate-pulse">
+                <div class="w-16 h-16 rounded-full bg-primary/25 flex items-center justify-center">
+                  <span class="material-symbols-outlined text-primary text-3xl">location_on</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="absolute bottom-4 left-4 right-4 bg-surface/90 backdrop-blur-md p-4 rounded-xl flex items-center justify-between border border-outline-variant/10 shadow-sm">
+            <div>
+              <p class="font-label-caps text-[9px] text-secondary tracking-widest font-extrabold">PICKUP AREA</p>
+              <p class="font-body-base text-xs font-bold text-on-surface">
+                <%= @item.user.neighborhood ? @item.user.neighborhood.name : "Local neighborhood circle" %>
+              </p>
+            </div>
+            <span class="material-symbols-outlined text-primary text-[20px]">directions</span>
+          </div>
+        </div>
+      </section>
     </div>
 
-    <%# Right Column: Details & Booking %>
-    <div class="lg:col-span-5 space-y-5 sticky-sidebar-card">
+    <%# Right Column: Booking & Details %>
+    <div class="lg:col-span-5 space-y-6 sticky-sidebar-card">
+      <div class="form-card p-6 space-y-6">
+        <div class="space-y-3">
+          <div class="flex justify-between items-center">
+            <% if @item.available? %>
+              <span class="bg-primary-container/10 text-on-primary-container px-3 py-1 rounded-full font-label-caps text-[10px] tracking-wider font-extrabold">
+                AVAILABLE NOW
+              </span>
+            <% else %>
+              <span class="bg-tertiary-container/10 text-on-tertiary-container px-3 py-1 rounded-full font-label-caps text-[10px] tracking-wider font-extrabold">
+                ON LOAN
+              </span>
+            <% end %>
+            <div class="flex items-center gap-1 text-primary">
+              <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+              <span class="font-bold text-sm">4.9</span>
+            </div>
+          </div>
 
-      <%# Main Details Card %>
-      <div class="form-card p-6 space-y-5">
-
-        <%# Header %>
-        <div class="flex justify-between items-start gap-4">
-          <div class="space-y-2.5">
-            <span class="badge badge-success">
-              <%= @item.category.titleize %>
-            </span>
-            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight leading-none">
+          <div class="flex justify-between items-start gap-4">
+            <h1 class="font-headline-lg text-2xl sm:text-3xl text-on-surface leading-tight">
               <%= @item.name %>
             </h1>
-          </div>
-          <% if @item.user_id == current_user&.id %>
-            <%= link_to edit_item_path(@item), class: "p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-400 hover:text-emerald-500 hover:border-emerald-500/30 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 transition-all duration-200" do %>
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-              </svg>
-            <% end %>
-          <% end %>
-        </div>
 
-        <%# Condition %>
-        <div class="flex items-center gap-3 text-sm">
-          <span class="text-slate-500 dark:text-slate-400 font-semibold">Condition:</span>
-          <span class="badge
-            <%= @item.condition == 'like_new' ? 'badge-success' :
-                @item.condition == 'good' ? 'badge-info' :
-                @item.condition == 'fair' ? 'badge-warning' :
-                'badge-neutral' %>">
-            <%= @item.condition.titleize %>
-          </span>
-        </div>
-
-        <%# Owner Card %>
-        <div class="flex items-center gap-3.5 p-4 rounded-xl bg-slate-50/80 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800/50">
-          <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center shadow-md shadow-purple-500/15">
-            <span class="text-white font-bold text-sm"><%= @item.user.name.first.upcase %></span>
-          </div>
-          <div>
-            <p class="font-bold text-sm text-slate-800 dark:text-white"><%= @item.user.name %></p>
-            <p class="text-xs text-slate-400 font-medium">
-              <% if @item.user.neighborhood %>
-                <%= @item.user.neighborhood.name %> ·
+            <% if @item.user_id == current_user&.id %>
+              <%= link_to edit_item_path(@item), class: "p-2.5 rounded-xl border border-outline-variant/50 text-secondary hover:text-primary hover:border-primary transition-all duration-200" do %>
+                <span class="material-symbols-outlined text-[20px]">edit</span>
               <% end %>
-              Listed <%= time_ago_in_words(@item.created_at) %> ago
-            </p>
+            <% end %>
+          </div>
+
+          <div class="flex items-center gap-2 text-secondary text-sm font-semibold">
+            <span class="material-symbols-outlined text-[18px] text-outline">location_on</span>
+            <span><%= @item.user.neighborhood ? @item.user.neighborhood.name : "Local Neighborhood" %></span>
+          </div>
+
+          <div class="flex items-center gap-3 text-xs font-bold pt-1 border-t border-outline-variant/10">
+            <span class="text-outline">CONDITION:</span>
+            <span class="badge <%= @item.condition == 'like_new' ? 'badge-success' : @item.condition == 'good' ? 'badge-info' : @item.condition == 'fair' ? 'badge-warning' : 'badge-neutral' %>">
+              <%= @item.condition.titleize %>
+            </span>
           </div>
         </div>
 
-        <%# Booking Form %>
+        <%# Safety Info %>
+        <div class="p-5 bg-tertiary-container/5 rounded-2xl border border-tertiary/10 space-y-3">
+          <div class="flex items-center gap-2 text-tertiary">
+            <span class="material-symbols-outlined text-[20px]">gavel</span>
+            <h3 class="font-label-caps text-[10px] tracking-wider font-extrabold uppercase">Safety & Usage Notes</h3>
+          </div>
+          <ul class="space-y-2 text-xs font-semibold text-secondary">
+            <li class="flex items-start gap-2">
+              <span class="material-symbols-outlined text-primary text-sm mt-0.5">check_circle</span>
+              Handle item with care and use proper safety equipment.
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="material-symbols-outlined text-primary text-sm mt-0.5">check_circle</span>
+              Report any damage or wear to the lender immediately.
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="material-symbols-outlined text-primary text-sm mt-0.5">check_circle</span>
+              Return in clean condition inside the original packaging.
+            </li>
+          </ul>
+        </div>
+
+        <%# Request form %>
         <% if user_signed_in? && @item.user_id != current_user.id && @item.available? %>
           <%= turbo_frame_tag "loan_form" do %>
-            <div class="border-t border-slate-100 dark:border-slate-800/60 pt-5 space-y-4" data-controller="booking">
-              <h3 class="font-bold text-slate-800 dark:text-white text-base flex items-center gap-2">
-                <svg class="w-4.5 h-4.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            <div class="border-t border-outline-variant/20 pt-5 space-y-4" data-controller="booking">
+              <h3 class="font-bold text-on-surface text-sm tracking-wider uppercase font-label-caps flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary">calendar_today</span>
                 Request to Borrow
               </h3>
 
-              <%= form_with model: @loan, url: item_loans_path(@item), class: "space-y-3.5" do |f| %>
+              <%= form_with model: @loan, url: item_loans_path(@item), class: "space-y-4" do |f| %>
                 <div class="grid grid-cols-2 gap-3">
                   <div>
-                    <%= f.label :start_date, "Pick Up", class: "block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5" %>
+                    <%= f.label :start_date, "Pick Up", class: "block text-[10px] font-bold text-secondary uppercase tracking-wider mb-1.5" %>
                     <%= f.date_field :start_date, min: Date.current,
-                        class: "w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 text-sm font-medium focus:bg-white dark:focus:bg-slate-800 transition-all",
+                        class: "w-full px-3 py-2.5 rounded-xl border border-outline-variant/60 bg-surface text-sm font-semibold focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all",
                         data: { booking_target: "startDate", action: "change->booking#validateDates" } %>
                   </div>
                   <div>
-                    <%= f.label :end_date, "Return By", class: "block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5" %>
+                    <%= f.label :end_date, "Return By", class: "block text-[10px] font-bold text-secondary uppercase tracking-wider mb-1.5" %>
                     <%= f.date_field :end_date, min: Date.current + 1,
-                        class: "w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 text-sm font-medium focus:bg-white dark:focus:bg-slate-800 transition-all",
+                        class: "w-full px-3 py-2.5 rounded-xl border border-outline-variant/60 bg-surface text-sm font-semibold focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all",
                         data: { booking_target: "endDate", action: "change->booking#validateDates" } %>
                   </div>
                 </div>
                 <div>
-                  <%= f.label :message, "Note for lender", class: "block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5" %>
+                  <%= f.label :message, "Note for lender", class: "block text-[10px] font-bold text-secondary uppercase tracking-wider mb-1.5" %>
                   <%= f.text_area :message, rows: 2, placeholder: "What's your project?",
-                      class: "w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 text-sm font-medium placeholder-slate-400 focus:bg-white dark:focus:bg-slate-800 resize-none transition-all" %>
+                      class: "w-full px-3 py-2.5 rounded-xl border border-outline-variant/60 bg-surface text-sm font-semibold placeholder:text-outline focus:border-primary focus:ring-4 focus:ring-primary/10 resize-none transition-all" %>
                 </div>
-                <%= f.submit "Submit Request", class: "w-full py-3 btn-primary text-sm font-bold cursor-pointer",
-                    data: { booking_target: "submitBtn" } %>
+                <%= f.submit "SUBMIT REQUEST", class: "w-full py-3.5 bg-primary text-on-primary rounded-xl font-label-caps text-xs tracking-widest font-extrabold cursor-pointer transition-all hover:brightness-110 shadow-lg active:scale-95" %>
               <% end %>
             </div>
           <% end %>
         <% elsif !@item.available? %>
           <div class="p-4 rounded-xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200/50 dark:border-amber-800/30 flex items-center gap-3">
-            <svg class="w-5 h-5 text-amber-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            <p class="text-sm font-semibold text-amber-700 dark:text-amber-300">Currently on loan — check back later!</p>
+            <span class="material-symbols-outlined text-amber-500">lock_clock</span>
+            <p class="text-xs font-semibold text-amber-700 dark:text-amber-300">Currently on loan — check back later!</p>
           </div>
         <% end %>
 
-        <%# Pending Requests (Item Owner) %>
+        <%# Owner Pending Requests %>
         <% if @item.user_id == current_user&.id && @item.pending_requests.any? %>
-          <div class="border-t border-slate-100 dark:border-slate-800/60 pt-5 space-y-4">
-            <h3 class="font-bold text-slate-800 dark:text-white text-base flex items-center gap-2">
-              <svg class="w-4.5 h-4.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          <div class="border-t border-outline-variant/20 pt-5 space-y-4">
+            <h3 class="font-bold text-on-surface text-sm tracking-wider uppercase font-label-caps flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary">groups</span>
               Pending Requests (<%= @item.pending_requests.count %>)
             </h3>
             <div class="space-y-3">
               <% @item.pending_requests.includes(:borrower).each do |loan| %>
-                <div class="activity-card space-y-3">
-                  <div class="flex justify-between items-center">
-                    <div class="flex items-center gap-2">
-                      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center">
-                        <span class="text-white text-xs font-bold"><%= loan.borrower.name.first.upcase %></span>
-                      </div>
-                      <div>
-                        <p class="font-bold text-sm text-slate-800 dark:text-white"><%= loan.borrower.name %></p>
-                        <p class="text-xs text-emerald-600 dark:text-emerald-400 font-semibold"><%= loan.start_date.strftime("%b %d") %> – <%= loan.end_date.strftime("%b %d") %></p>
-                      </div>
+                <div class="bg-surface p-4 rounded-xl border border-outline-variant/30 space-y-3 shadow-sm">
+                  <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center shadow-sm">
+                      <span class="text-white text-xs font-bold"><%= loan.borrower.name.first.upcase %></span>
+                    </div>
+                    <div>
+                      <p class="font-bold text-xs text-on-surface"><%= loan.borrower.name %></p>
+                      <p class="text-[10px] text-primary font-bold"><%= loan.start_date.strftime("%b %d") %> – <%= loan.end_date.strftime("%b %d") %></p>
                     </div>
                   </div>
                   <% if loan.message.present? %>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 italic bg-slate-50 dark:bg-slate-800/50 p-3 rounded-lg border border-slate-100 dark:border-slate-800/40">
+                    <p class="text-[11px] text-secondary italic bg-surface-container/50 p-2.5 rounded-lg border border-outline-variant/10">
                       "<%= loan.message %>"
                     </p>
                   <% end %>
-                  <div class="flex gap-2">
+                  <div class="flex gap-2 pt-1">
                     <%= button_to "Approve", approve_item_loan_path(@item, loan), method: :patch,
-                        class: "flex-1 py-2 btn-primary text-xs cursor-pointer" %>
+                        class: "flex-1 py-2 bg-primary text-on-primary rounded-lg font-label-caps text-[10px] font-extrabold tracking-wider hover:brightness-110 active:scale-95 cursor-pointer" %>
                     <%= button_to "Decline", decline_item_loan_path(@item, loan), method: :patch,
-                        class: "px-4 py-2 btn-secondary text-xs cursor-pointer" %>
+                        class: "px-4 py-2 border border-outline-variant/50 text-secondary rounded-lg font-label-caps text-[10px] font-extrabold tracking-wider hover:bg-surface-container/50 active:scale-95 cursor-pointer" %>
                   </div>
                 </div>
               <% end %>
             </div>
           </div>
         <% end %>
-
       </div>
     </div>
 
   </div>
+</div>
+
 </div>

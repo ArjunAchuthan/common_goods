@@ -1,83 +1,82 @@
-<%# My Borrows — Premium Activity Page %>
-<div class="space-y-6 animate-fade-in-up">
+<%# My Borrows — Stitch Premium Activity Page %>
+<div class="space-y-8 animate-fade-in-up">
 
   <%# Header %>
   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
     <div>
-      <h1 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Activity</h1>
-      <p class="text-sm text-slate-500 dark:text-slate-400 font-medium mt-1">Track your borrowing and lending history</p>
+      <h1 class="font-headline-lg text-2xl sm:text-3xl text-on-surface">Activity</h1>
+      <p class="font-body-base text-sm text-secondary">Track your borrowing and lending history</p>
     </div>
-    <%= link_to new_item_path, class: "btn-primary text-sm w-fit" do %>
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
-      Share Item
+    <%= link_to new_item_path, class: "inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-on-primary rounded-full font-label-caps text-xs tracking-wider transition-all hover:brightness-110 shadow-md active:scale-95 duration-200" do %>
+      <span class="material-symbols-outlined text-[16px]">add</span>
+      LEND ITEM
     <% end %>
   </div>
 
   <%# Tab Navigation %>
   <div class="tab-nav">
     <%= link_to my_borrows_loans_path, class: "tab-item active" do %>
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/></svg>
+      <span class="material-symbols-outlined text-base">swap_horiz</span>
       My Borrows
     <% end %>
     <%= link_to my_lends_loans_path, class: "tab-item" do %>
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      <span class="material-symbols-outlined text-base">handshake</span>
       My Lends
     <% end %>
   </div>
 
   <%# Loans List %>
   <% if @loans.any? %>
-    <div class="space-y-3">
+    <div class="space-y-4">
       <% @loans.each do |loan| %>
-        <div class="activity-card">
-          <div class="flex items-center justify-between gap-4">
-            <div class="flex items-center gap-4 min-w-0">
-              <%# Item thumbnail %>
-              <% if loan.item.images.attached? %>
-                <%= image_tag loan.item.thumbnail.variant(resize_to_fill: [56, 56]),
-                    class: "w-14 h-14 rounded-xl object-cover flex-shrink-0 border border-slate-100 dark:border-slate-800" %>
-              <% else %>
-                <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-slate-100 to-slate-50 dark:from-slate-800 dark:to-slate-700 flex items-center justify-center flex-shrink-0">
-                  <svg class="w-6 h-6 text-slate-300 dark:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
-                </div>
-              <% end %>
-
-              <%# Item info %>
-              <div class="min-w-0">
-                <%= link_to loan.item.name, item_path(loan.item), class: "font-bold text-sm text-slate-800 dark:text-white hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors truncate block" %>
-                <p class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">From: <span class="font-semibold text-slate-600 dark:text-slate-300"><%= loan.item.user.name %></span></p>
-                <p class="text-xs text-slate-400 mt-0.5 font-medium">
-                  <svg class="w-3 h-3 inline-block mr-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                  <%= loan.start_date.strftime("%b %d") %> – <%= loan.end_date.strftime("%b %d, %Y") %>
-                </p>
+        <div class="bg-surface-container-lowest border border-outline-variant/20 rounded-2xl p-5 shadow-sm smooth-lift flex items-center justify-between gap-4">
+          <div class="flex items-center gap-4 min-w-0">
+            <%# Item thumbnail %>
+            <% if loan.item.images.attached? %>
+              <%= image_tag loan.item.thumbnail.variant(resize_to_fill: [64, 64]),
+                  class: "w-16 h-16 rounded-xl object-cover flex-shrink-0 border border-outline-variant/20 shadow-sm" %>
+            <% else %>
+              <div class="w-16 h-16 rounded-xl bg-surface-container/30 flex items-center justify-center flex-shrink-0 border border-outline-variant/20">
+                <span class="material-symbols-outlined text-outline text-2xl">image</span>
               </div>
-            </div>
+            <% end %>
 
-            <%# Status Badge %>
-            <span class="badge flex-shrink-0
-              <%= case loan.status
-                  when 'pending' then 'badge-warning'
-                  when 'approved' then 'badge-info'
-                  when 'active' then 'badge-success'
-                  when 'returned' then 'badge-neutral'
-                  when 'declined' then 'badge-danger'
-                  end %>">
-              <%= loan.status.titleize %>
-            </span>
+            <%# Item info %>
+            <div class="min-w-0">
+              <%= link_to loan.item.name, item_path(loan.item), class: "font-bold text-sm text-on-surface hover:text-primary transition-colors truncate block" %>
+              <p class="text-xs text-secondary font-medium mt-0.5">From: <span class="font-bold text-on-surface"><%= loan.item.user.name %></span></p>
+              <p class="text-xs text-outline mt-1 font-semibold flex items-center gap-1">
+                <span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                <%= loan.start_date.strftime("%b %d") %> – <%= loan.end_date.strftime("%b %d, %Y") %>
+              </p>
+            </div>
           </div>
+
+          <%# Status Badge %>
+          <span class="badge flex-shrink-0
+            <%= case loan.status
+                when 'pending' then 'badge-warning'
+                when 'approved' then 'badge-info'
+                when 'active' then 'badge-success'
+                when 'returned' then 'badge-neutral'
+                when 'declined' then 'badge-danger'
+                end %>">
+            <%= loan.status.titleize %>
+          </span>
         </div>
       <% end %>
     </div>
   <% else %>
-    <div class="empty-state bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/50 dark:border-slate-800/40">
-      <div class="empty-state-icon">
-        <svg class="w-8 h-8 text-emerald-500/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/></svg>
+    <div class="empty-state bg-surface-container-lowest rounded-2xl border border-outline-variant/20 shadow-sm py-16">
+      <div class="empty-state-icon mx-auto">
+        <span class="material-symbols-outlined text-primary text-4xl">shopping_cart</span>
       </div>
-      <h3 class="text-lg font-bold text-slate-700 dark:text-slate-200 mb-1">No borrows yet</h3>
-      <p class="text-sm text-slate-400 dark:text-slate-500 max-w-sm">You haven't borrowed anything yet. Browse the catalog to find tools and gear from your neighbors.</p>
-      <%= link_to root_path, class: "mt-5 btn-primary text-sm" do %>
-        Browse Items
+      <h3 class="text-lg font-bold text-on-surface mt-4 mb-2">No borrows yet</h3>
+      <p class="text-secondary text-sm max-w-sm mx-auto leading-relaxed">You haven't borrowed anything yet. Browse the catalog to find tools and gear from your neighbors.</p>
+      <%= link_to root_path, class: "mt-6 inline-flex items-center gap-2 px-6 py-3 bg-primary text-on-primary rounded-full font-label-caps text-xs tracking-wider transition-all hover:brightness-110 shadow-md active:scale-95" do %>
+        BROWSE ITEMS
       <% end %>
     </div>
   <% end %>
 </div>
+
