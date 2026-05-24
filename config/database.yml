@@ -1,0 +1,30 @@
+default: &default
+  adapter: postgis
+  encoding: unicode
+  username: postgres
+  host: 127.0.0.1
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+development:
+  primary:
+    <<: *default
+    database: common_goods_development
+  queue:
+    <<: *default
+    database: common_goods_development_queue
+    migrations_paths: db/queue_migrate
+
+test:
+  primary:
+    <<: *default
+    database: common_goods_test
+  queue:
+    <<: *default
+    database: common_goods_test_queue
+    migrations_paths: db/queue_migrate
+
+production:
+  <<: *default
+  database: common_goods_production
+  username: common_goods
+  password: <%= ENV["COMMON_GOODS_DATABASE_PASSWORD"] %>

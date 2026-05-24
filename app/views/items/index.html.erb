@@ -1,0 +1,103 @@
+<%# Items Index — Premium Discovery Page %>
+<div class="space-y-8 animate-fade-in-up">
+
+  <%# Hero Section with Gradient Mesh %>
+  <div class="relative rounded-3xl overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8 sm:p-12 lg:p-16 mesh-bg">
+    <div class="relative z-10 text-center max-w-3xl mx-auto">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-full text-emerald-400 text-xs font-bold uppercase tracking-wider mb-6">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        Neighborhood Sharing Collective
+      </div>
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white leading-tight mb-4">
+        Borrow <span class="gradient-text-animated">Premium Gear</span><br class="hidden sm:block"/>
+        From Neighbors You Trust
+      </h1>
+      <p class="text-base sm:text-lg text-slate-300 font-medium leading-relaxed max-w-2xl mx-auto">
+        Access tools, outdoor equipment, and specialty items for free. Save money, reduce waste, and build community.
+      </p>
+
+      <%# Stats Row %>
+      <div class="flex items-center justify-center gap-6 sm:gap-10 mt-8 pt-6 border-t border-slate-700/50">
+        <div class="text-center">
+          <p class="text-2xl font-black text-white"><%= Item.count %>+</p>
+          <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider mt-0.5">Items Shared</p>
+        </div>
+        <div class="w-px h-8 bg-slate-700/50"></div>
+        <div class="text-center">
+          <p class="text-2xl font-black text-white"><%= User.count %></p>
+          <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider mt-0.5">Members</p>
+        </div>
+        <div class="w-px h-8 bg-slate-700/50"></div>
+        <div class="text-center">
+          <p class="text-2xl font-black text-white"><%= Loan.count %></p>
+          <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider mt-0.5">Loans Made</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%# Search & Filters — Glass Panel %>
+  <div class="glass-panel rounded-2xl shadow-md border border-slate-200/50 dark:border-slate-700/40 p-5 sm:p-6" data-controller="search">
+    <%= form_with url: search_items_path, method: :get, data: { turbo_frame: "items_grid" } do |f| %>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-center">
+
+        <%# Search Input %>
+        <div class="sm:col-span-2 relative">
+          <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+            <svg class="h-4.5 w-4.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+          </div>
+          <%= f.text_field :query, value: params[:query], placeholder: "Search tools, gear, equipment...",
+              class: "w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200/80 dark:border-slate-700/60 bg-white/60 dark:bg-slate-800/40 text-sm font-medium placeholder-slate-400 dark:placeholder-slate-500 focus:bg-white dark:focus:bg-slate-800 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300",
+              data: { search_target: "input", action: "input->search#debounceSearch" } %>
+        </div>
+
+        <%# Category %>
+        <div>
+          <%= f.select :category, options_for_select(Item.categories.keys.map { |c| [c.titleize, c] }, params[:category]),
+              { include_blank: "All Categories" },
+              class: "w-full px-4 py-3 rounded-xl border border-slate-200/80 dark:border-slate-700/60 bg-white/60 dark:bg-slate-800/40 text-sm font-medium text-slate-700 dark:text-slate-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300 cursor-pointer",
+              data: { action: "change->search#submit" } %>
+        </div>
+
+        <%# Radius %>
+        <div>
+          <%= f.select :radius, options_for_select([["Within 2 km", 2], ["Within 5 km", 5], ["Within 10 km", 10]], params[:radius] || 5),
+              {},
+              class: "w-full px-4 py-3 rounded-xl border border-slate-200/80 dark:border-slate-700/60 bg-white/60 dark:bg-slate-800/40 text-sm font-medium text-slate-700 dark:text-slate-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300 cursor-pointer",
+              data: { action: "change->search#submit" } %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <%# Items Grid %>
+  <%= turbo_frame_tag "items_grid" do %>
+    <% if @items.any? %>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 stagger-children">
+        <% @items.each do |item| %>
+          <%= render "items/card", item: item %>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="empty-state bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/50 dark:border-slate-800/40 shadow-sm">
+        <div class="empty-state-icon">
+          <svg class="w-10 h-10 text-emerald-500/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+          </svg>
+        </div>
+        <h3 class="text-xl font-bold text-slate-700 dark:text-slate-200 mb-2">No items found</h3>
+        <p class="text-slate-400 dark:text-slate-500 text-sm max-w-sm leading-relaxed">
+          No gear matches your search filters. Try broadening your search or be the first to share an item!
+        </p>
+        <% if user_signed_in? %>
+          <%= link_to new_item_path, class: "mt-6 btn-primary text-sm" do %>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+            Share an Item
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
+  <% end %>
+</div>

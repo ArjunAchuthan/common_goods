@@ -1,0 +1,23 @@
+<%# New Item — Premium Form Page %>
+<div class="max-w-2xl mx-auto animate-fade-in-up">
+  <div class="mb-5">
+    <%= link_to items_path, class: "inline-flex items-center gap-2 text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors group" do %>
+      <svg class="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+      Back
+    <% end %>
+  </div>
+
+  <div class="form-card p-8">
+    <div class="space-y-1.5 mb-8">
+      <h1 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-3">
+        <div class="w-10 h-10 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-xl flex items-center justify-center shadow-md shadow-emerald-500/15">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+        </div>
+        Share an Item
+      </h1>
+      <p class="text-sm text-slate-500 dark:text-slate-400 font-medium pl-13">List a tool, gadget, or piece of equipment for your neighbors to borrow.</p>
+    </div>
+
+    <%= render "form", item: @item %>
+  </div>
+</div>

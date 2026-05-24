@@ -1,0 +1,56 @@
+<%# Invite a Neighbor — Premium Form Page %>
+<div class="max-w-lg mx-auto animate-fade-in-up">
+  <div class="form-card p-8">
+    <div class="space-y-2 mb-8">
+      <div class="w-12 h-12 bg-gradient-to-br from-violet-400 to-purple-500 rounded-2xl flex items-center justify-center shadow-md shadow-purple-500/15 mb-4">
+        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+        </svg>
+      </div>
+      <h1 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Invite a Neighbor</h1>
+      <p class="text-sm text-slate-500 dark:text-slate-400 font-medium leading-relaxed">
+        Invite someone to join
+        <strong class="text-emerald-600 dark:text-emerald-400"><%= current_user.neighborhood&.name || "your neighborhood" %></strong>.
+        They'll receive a secure invite link to register.
+      </p>
+    </div>
+
+    <%= form_with model: @invitation, class: "space-y-5" do |f| %>
+      <% if @invitation.errors.any? %>
+        <div class="bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800/50 rounded-xl p-4 animate-fade-in-up">
+          <ul class="text-xs text-rose-700 dark:text-rose-300 space-y-1 font-semibold">
+            <% @invitation.errors.full_messages.each do |msg| %>
+              <li class="flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01"/></svg>
+                <%= msg %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div>
+        <%= f.label :invitee_email, "Their Email Address", class: "block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5" %>
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+            <svg class="w-4.5 h-4.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          </div>
+          <%= f.email_field :invitee_email, required: true, placeholder: "neighbor@example.com",
+              class: "w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 text-sm font-medium placeholder-slate-400 dark:placeholder-slate-500 focus:bg-white dark:focus:bg-slate-800 transition-all duration-200" %>
+        </div>
+      </div>
+
+      <%= f.submit "Send Invitation", class: "w-full py-3 btn-primary text-sm font-bold cursor-pointer" %>
+    <% end %>
+
+    <%# Info note %>
+    <div class="mt-6 p-4 rounded-xl bg-slate-50 dark:bg-slate-800/30 border border-slate-100 dark:border-slate-800/40">
+      <div class="flex items-start gap-3">
+        <svg class="w-5 h-5 text-slate-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
+          Invitations are verified by neighborhood captains. Your neighbor will receive a unique registration link that's valid for 7 days.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

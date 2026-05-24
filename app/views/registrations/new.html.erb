@@ -1,0 +1,139 @@
+<%# Registration Page — Premium Split Layout %>
+<div class="min-h-[85vh] flex items-center justify-center py-8 animate-fade-in-up">
+  <div class="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-0 overflow-hidden rounded-3xl border border-slate-200/50 dark:border-slate-800/40 shadow-xl bg-white dark:bg-slate-900">
+
+    <%# Left: Hero Brand Panel %>
+    <div class="hidden lg:flex flex-col justify-between p-10 bg-gradient-to-br from-violet-600 via-purple-600 to-fuchsia-700 text-white relative overflow-hidden">
+      <div class="absolute inset-0 opacity-10">
+        <div class="absolute top-0 right-0 w-80 h-80 bg-white/20 rounded-full blur-3xl translate-x-1/3 -translate-y-1/3"></div>
+        <div class="absolute bottom-0 left-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-x-1/3 translate-y-1/3"></div>
+      </div>
+
+      <div class="relative z-10">
+        <div class="flex items-center gap-3 mb-12">
+          <div class="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center border border-white/20">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+          </div>
+          <span class="text-xl font-extrabold tracking-tight">CommonGoods</span>
+        </div>
+
+        <h2 class="text-4xl font-black tracking-tight leading-tight mb-4">
+          Join Your<br/>Neighborhood<br/>Collective
+        </h2>
+        <p class="text-purple-100/90 text-base leading-relaxed max-w-sm">
+          Get access to thousands of shared tools, gear, and equipment. Save money and reduce waste.
+        </p>
+      </div>
+
+      <div class="relative z-10 space-y-3">
+        <div class="flex items-center gap-3 text-sm text-purple-100/80 font-medium">
+          <svg class="w-5 h-5 text-purple-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          Free to join & share
+        </div>
+        <div class="flex items-center gap-3 text-sm text-purple-100/80 font-medium">
+          <svg class="w-5 h-5 text-purple-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          Verified neighborhood members only
+        </div>
+        <div class="flex items-center gap-3 text-sm text-purple-100/80 font-medium">
+          <svg class="w-5 h-5 text-purple-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          Your data stays private & secure
+        </div>
+      </div>
+    </div>
+
+    <%# Right: Registration Form %>
+    <div class="p-8 sm:p-10 lg:p-12 flex flex-col justify-center">
+      <%# Mobile logo %>
+      <div class="lg:hidden flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-gradient-to-br from-violet-500 via-purple-500 to-fuchsia-500 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/20">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          </svg>
+        </div>
+        <span class="text-xl font-extrabold text-slate-900 dark:text-white tracking-tight">Common<span class="gradient-text">Goods</span></span>
+      </div>
+
+      <div class="space-y-2 mb-6">
+        <h1 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">Create account</h1>
+        <p class="text-slate-500 dark:text-slate-400 font-medium text-sm">
+          <% if @invitation %>
+            You've been invited to <strong class="text-emerald-600 dark:text-emerald-400"><%= @invitation.neighborhood.name %></strong>
+          <% else %>
+            Join the neighborhood sharing collective
+          <% end %>
+        </p>
+      </div>
+
+      <%# Error messages %>
+      <% if @user.errors.any? %>
+        <div class="mb-5 bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800/50 rounded-xl p-4 animate-fade-in-up">
+          <ul class="text-xs text-rose-700 dark:text-rose-300 space-y-1 font-semibold">
+            <% @user.errors.full_messages.each do |msg| %>
+              <li class="flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01"/></svg>
+                <%= msg %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <%= form_with model: @user, url: registration_path, class: "space-y-4" do |f| %>
+        <% if @invitation %>
+          <%= hidden_field_tag :invitation_token, @invitation.token %>
+        <% end %>
+
+        <div>
+          <%= f.label :name, "Full Name", class: "block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5" %>
+          <%= f.text_field :name, required: true, autofocus: true,
+              placeholder: "Sarah Chen",
+              class: "w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 text-sm font-medium placeholder-slate-400 dark:placeholder-slate-500 focus:bg-white dark:focus:bg-slate-800 transition-all duration-200" %>
+        </div>
+
+        <div>
+          <%= f.label :email, "Email", class: "block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5" %>
+          <%= f.email_field :email, required: true, autocomplete: "email",
+              placeholder: "you@example.com",
+              value: @invitation&.invitee_email,
+              class: "w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 text-sm font-medium placeholder-slate-400 dark:placeholder-slate-500 focus:bg-white dark:focus:bg-slate-800 transition-all duration-200" %>
+        </div>
+
+        <div>
+          <%= f.label :address, "Street Address", class: "block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5" %>
+          <%= f.text_field :address, required: true,
+              placeholder: "123 Maple Street",
+              class: "w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 text-sm font-medium placeholder-slate-400 dark:placeholder-slate-500 focus:bg-white dark:focus:bg-slate-800 transition-all duration-200" %>
+          <p class="text-xs text-slate-400 mt-1.5 font-medium">Used for finding nearby items. Never shared publicly.</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <%= f.label :password, "Password", class: "block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5" %>
+            <%= f.password_field :password, required: true,
+                placeholder: "Min 8 chars",
+                class: "w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 text-sm font-medium placeholder-slate-400 dark:placeholder-slate-500 focus:bg-white dark:focus:bg-slate-800 transition-all duration-200" %>
+          </div>
+          <div>
+            <%= f.label :password_confirmation, "Confirm", class: "block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5" %>
+            <%= f.password_field :password_confirmation, required: true,
+                placeholder: "Repeat",
+                class: "w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 text-sm font-medium placeholder-slate-400 dark:placeholder-slate-500 focus:bg-white dark:focus:bg-slate-800 transition-all duration-200" %>
+          </div>
+        </div>
+
+        <div class="pt-2">
+          <%= f.submit "Create Account", class: "w-full py-3 btn-primary text-sm font-bold cursor-pointer" %>
+        </div>
+      <% end %>
+
+      <div class="mt-6 pt-5 border-t border-slate-100 dark:border-slate-800">
+        <p class="text-center text-sm text-slate-500 dark:text-slate-400 font-medium">
+          Already a member?
+          <%= link_to "Sign In", new_session_path, class: "text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 font-semibold hover:underline transition-colors ml-1" %>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
